@@ -5,18 +5,24 @@ interface IProduct {
   description: string;
   image: string;
   price: number;
+  percentage: number;
   isPalindrome?: boolean;
   calculatedPrice?: number;
 }
 
+export class ErrorEntity {
+  message: string;
+  code: number;
+}
+
 export class Product {
-  // private product: IProduct;
   private readonly _id: string;
   private readonly id: string;
   private readonly brand: string;
   private readonly description: string;
   private readonly image: string;
   private readonly price: number;
+  private readonly percentage: number;
   private readonly isPalindrome?: boolean;
   private readonly calculatedPrice?: number;
   constructor(p: Record<any, any>) {
@@ -26,6 +32,7 @@ export class Product {
     this.description = p.description;
     this.image = p.image;
     this.price = p.price;
+    this.percentage = p.percentage;
     this.isPalindrome = p.isPalindrome;
     this.calculatedPrice = p.calculatedPrice;
   }
@@ -38,6 +45,7 @@ export class Product {
       description: this.description,
       image: this.image,
       price: this.price,
+      percentage: this.percentage,
       isPalindrome: this.isPalindrome ?? false,
       calculatedPrice: this.calculatedPrice,
     };
