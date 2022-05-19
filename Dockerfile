@@ -23,6 +23,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+EXPOSE 3000:3000
 RUN npm install --only=prod --force
 
 COPY . .
