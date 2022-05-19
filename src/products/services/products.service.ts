@@ -1,19 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Product, Params } from './../entities/product.entity';
 import { HttpService } from '@nestjs/axios';
 import axios, { AxiosResponse } from 'axios';
+import config from '../../config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    @Inject(config.KEY) private configService: ConfigType<typeof config>,
+  ) {}
 
   private products: Product[] = [];
 
   async findAll({ searchText, id }: Params) {
-    let findUrl = `http://localhost:8080/api/v1/products?`;
-    // TODO: Implement search of products
-    console.log(searchText.length, id.length);
+    const baseUrl = this.configService.API_URL;
+    let findUrl = `${baseUrl}/products?`;
 
     if (searchText !== '' && id === '') {
       findUrl += `s=${searchText}`;
@@ -35,8 +43,6 @@ export class ProductsService {
       findUrl += `id=${id}`;
     }
 
-    console.log(findUrl);
-
     await axios
       .get(findUrl)
       .then((response) => {
@@ -50,6 +56,9 @@ export class ProductsService {
         this.products = [];
       });
 
+    if (this.products.length === 0) {
+      throw new HttpException('Anything, this should not be showed.', 204);
+    }
     return this.products;
   }
 }

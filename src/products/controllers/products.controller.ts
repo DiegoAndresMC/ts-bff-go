@@ -1,6 +1,6 @@
 import {
   Controller,
-  Get,
+  Get, HttpCode, HttpStatus,
   Query,
 } from '@nestjs/common';
 import {
@@ -10,9 +10,10 @@ import {
   ApiNoContentResponse,
   ApiBadRequestResponse,
 } from '@nestjs/swagger';
-import { ProductsService } from '../services/products.service';
+import { ProductsService } from './../services/products.service';
 import { Product } from '../entities/product.entity';
 import { ParseStringPipe } from '../../common/parse-string.pipe';
+import {ApiImplicitQuery} from "@nestjs/swagger/dist/decorators/api-implicit-query.decorator";
 
 @ApiTags('products')
 @Controller('products')
@@ -37,10 +38,20 @@ export class ProductsController {
     status: 400,
     content: {},
   })
-  getProducts(
+  @ApiImplicitQuery({
+    name: 'id',
+    required: false,
+    type: String,
+  })
+  @ApiImplicitQuery({
+    name: 'searchText',
+    required: false,
+    type: String,
+  })
+  async getProducts(
     @Query('id', ParseStringPipe) id?: string,
     @Query('searchText', ParseStringPipe) searchText?: string,
   ) {
-    return this.productsService.findAll({ searchText, id });
+    return await this.productsService.findAll({ searchText, id });
   }
 }

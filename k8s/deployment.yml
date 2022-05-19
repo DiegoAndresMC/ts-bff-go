@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: challenge-bff-main
+spec:
+  selector:
+    matchLabels:
+      app: challenge-bff-main
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: challenge-bff-main
+    spec:
+      containers:
+        - name: challenge-bff-main
+          image: diegoamc/challenge-bff-main
+          ports:
+            - containerPort: 3000
