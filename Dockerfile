@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --force
 
 COPY . .
 
@@ -14,7 +14,7 @@ FROM node:alpine as production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
-ARG API_URL=http://35.175.64.41:8080/api/v1
+ARG API_URL
 ENV API_URL=${API_URL}
 ARG APP_NAME
 ENV APP_NAME=${APP_NAME}
@@ -23,7 +23,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install --only=prod
+RUN npm install --only=prod --force
 
 COPY . .
 
