@@ -38,7 +38,7 @@ export class Product {
       description: this.description,
       image: this.image,
       price: this.price,
-      isPalindrome: this.isPalindrome,
+      isPalindrome: this.isPalindrome ?? false,
       calculatedPrice: this.calculatedPrice,
     };
   }
