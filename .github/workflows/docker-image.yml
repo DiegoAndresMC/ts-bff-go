@@ -2,9 +2,11 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
+
+
 
 jobs:
 
@@ -13,36 +15,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        lfs: 'true'
-    - 
-      name: Build the Docker image
-      run: docker build -t diegoamc/challenge-bff-main -f Dockerfile .
-    -
-      name: Generate Deployment Package
-      run: zip -r deploy.zip *
-    -
-      name: Get timestamp
-      uses: gerred/actions/current-time@master
-      id: current-time
-        
-    - name: Run string replace
-      uses: frabert/replace-string-action@master
-      id: format-time
-      with:
-        pattern: '[:\.]+'
-        string: "${{ steps.current-time.outputs.time }}"
-        replace-with: '-'
-        flags: 'g'
-
-    - name: Deploy to EB
-      uses: einaregilsson/beanstalk-deploy@v14
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCES_KEY }}
-        aws_secret_key: ${{ secrets.AWS_ACCES_SECRET_KEY }}
-        application_name: challenge-bff-main
-        environment_name: challenge-bff-main-env
-        version_label: "challenge-bff-main-${{ steps.format-time.outputs.replaced }}"
-        region: us-east-1
-        deployment_package: deploy.zip
+      -
+        name: Checkout 
+        uses: actions/checkout@v2
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          build-args: | 
+            APP_NAME=${{ secrets.APP_NAME }}
+            API_URL=${{ secrets.API_URL }}
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/challenge-bff-main:latest
