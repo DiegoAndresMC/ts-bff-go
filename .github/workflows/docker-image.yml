@@ -41,8 +41,8 @@ jobs:
       with:
         aws_access_key: ${{ secrets.AWS_ACCES_KEY }}
         aws_secret_key: ${{ secrets.AWS_ACCES_SECRET_KEY }}
-        application_name: challenge-bff-main
-        environment_name: challenge-bff-main-env
-        version_label: "challenge-bff-main-${{ steps.format-time.outputs.replaced }}"
+        application_name: bff-api
+        environment_name: Bffapi-env
+        version_label: "bff-api-${{ steps.format-time.outputs.replaced }}"
         region: us-east-1
         deployment_package: deploy.zip
